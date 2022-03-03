@@ -11,6 +11,7 @@ date_default_timezone_set("Asia/Taipei");
 // 讀取資訊 
 $HttpRequestBody = file_get_contents('php://input');
 $HeaderSignature = $_SERVER['HTTP_X_LINE_SIGNATURE'];
+
 // 驗證來源是否是LINE官方伺服器 
 $Hash = hash_hmac('sha256', $HttpRequestBody, $ChannelSecret, true);
 $HashSignature = base64_encode($Hash);
@@ -52,7 +53,6 @@ $ChannelAccessToken = '';
 
 // 設定 API KEY
 $CWBAPIKey = ''; // 中央氣象局
-$EPAAPIKey = ''; // 環保署
 
 $httpClient = new CurlHTTPClient($ChannelAccessToken);
 $bot = new LINEBot($httpClient, ['channelSecret' => $ChannelSecret]);
@@ -76,18 +76,14 @@ foreach ($dataBody['events'] as $Events) { // 逐一處理事件
                 else if(in_array($city, $listShan)){
                     $city = $city . '縣';
                 }
-
                 if(in_array($city, $listCity)) {
                     $weatherJson = getJsonDataFromURL('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=' . $CWBAPIKey . '&format=JSON&locationName=' . $city);
-                    $aqiJson = getJsonDataFromURL('https://data.epa.gov.tw/api/v1/aqx_p_432?offset=0&limit=1000&api_key=' . $EPAAPIKey);
-                    if ($weatherJson == false || $aqiJson == false) {
+                    if ($weatherJson == false) {
                         $replyMsg = new TextMessageBuilder('取得資料超時，請重新嘗試。');
                     }
                     else {
                         // 天氣資料處理
-                        $weatherIcon = array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '15');
                         $weatherData = array();
-
                         for ($i = 0; $i <= 2; $i++) {
                             $weatherData[$i] = array();
                             for ($k = 0; $k <= 4; $k++) {
@@ -95,42 +91,8 @@ foreach ($dataBody['events'] as $Events) { // 逐一處理事件
                             }
                             array_push($weatherData[$i], $weatherJson['records']['location'][0]['weatherElement'][0]['time'][$i]['startTime']); //$weatherData[$i][5]
                             array_push($weatherData[$i], $weatherJson['records']['location'][0]['weatherElement'][0]['time'][$i]['endTime']); //$weatherData[$i][6]
-                            if (in_array($weatherJson['records']['location'][0]['weatherElement'][0]['time'][$i]['parameter']['parameterValue'], $weatherIcon)) {
-                                array_push($weatherData[$i], $weatherJson['records']['location'][0]['weatherElement'][0]['time'][$i]['parameter']['parameterValue']); //$weatherData[$i][7]
-                            } else {
-                                array_push($weatherData[$i], '0'); //$weatherData[$i][7]
-                            }
+                            array_push($weatherData[$i], $weatherJson['records']['location'][0]['weatherElement'][0]['time'][$i]['parameter']['parameterValue']); //$weatherData[$i][7]
                         }
-
-                        if (substr($weatherJson['records']['location'][0]['weatherElement'][0]['time'][1]['endTime'], -8, 2) == '18') {
-                            $folderOption = array('night', 'day', 'night');
-                            $dateOption = array('明日白天', '明日晚上');
-                        } else {
-                            $folderOption = array('day', 'night', 'day');
-                            $dateOption = array('今晚明晨', '明日白天');
-                        }
-                        // 空氣品質資料處理
-                        $num = 0;
-                        $found = 0;
-                        while ($found != 1) {
-                            if (!$aqiJson['records'][$num]['County']) {
-                                $found = 1;
-                            }
-                            if ($aqiJson['records'][$num]['County'] != $city) {
-                                $num++;
-                            } else {
-                                $aqiData = $aqiJson['records'][$num];
-                                $found = 1;
-                            }
-                        }
-                        $aqiIcon = array(
-                            '良好' => 1,
-                            '普通' => 2,
-                            '對敏感族群不健康' => 3,
-                            '對所有族群不健康' => 4,
-                            '非常不健康' => 5,
-                            '危害' => 6
-                        );
                         $replyMsg = new TextMessageBuilder("[" . $city . "]\n\n時間範圍：" . $weatherData[0][5] . " ~ " . $weatherData[0][6] . "\n天氣狀況：" . $weatherData[0][0] . "\n溫度狀況：" . $weatherData[0][2] . " ~ " . $weatherData[0][4] . "\n感受狀況：" . $weatherData[0][3] . "\n天氣編號：" . $weatherData[0][7] . "\n\n時間範圍：" . $weatherData[1][5] . " ~ " . $weatherData[1][6] . "\n天氣狀況：" . $weatherData[1][0] . "\n溫度狀況：" . $weatherData[1][2] . " ~ " . $weatherData[1][4] . "\n感受狀況：" . $weatherData[1][3] . "\n天氣編號：" . $weatherData[1][7] . "\n\n時間範圍：" . $weatherData[2][5] . " ~ " . $weatherData[2][6] . "\n天氣狀況：" . $weatherData[2][0] . "\n溫度狀況：" . $weatherData[2][2] . " ~ " . $weatherData[2][4] . "\n感受狀況：" . $weatherData[2][3] . "\n天氣編號：" . $weatherData[2][7]);
                     }
                 }
