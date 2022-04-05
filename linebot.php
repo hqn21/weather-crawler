@@ -20,11 +20,6 @@ if ($HashSignature != $HeaderSignature) {
 }
 
 http_response_code(200);
-header("Connection: close");
-header("Content-length: " . (string)ob_get_length());
-ob_end_flush();
-ob_flush(); 
-flush();
 
 function getJsonDataFromURL($url) {
     $ch = curl_init(); // 初始化 cURL
