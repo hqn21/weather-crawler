@@ -1,7 +1,7 @@
 # weather-crawler
 English | [繁體中文](docs/README_zh-tw.md)
 ## About The Project
-This project is a web crawler LINE Bot for inquiring 36 hours weather forecast.
+This a LINE bot for users to lookup localised weather forecast for the next 36 hours.
 ### Built With
 * LINE Messaging API SDK
 ## Getting Started
