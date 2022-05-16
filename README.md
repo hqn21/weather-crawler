@@ -24,7 +24,7 @@ Follow the instructions to set up the project locally.
    $CWBAPIKey = '';
    ```
 ## Live Demo
-[lin.ee/t69s2tm](lin.ee/t69s2tm)
+[https://lin.ee/t69s2tm](https://lin.ee/t69s2tm)
 ## License
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 ## Contact
