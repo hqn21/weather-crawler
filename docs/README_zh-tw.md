@@ -28,7 +28,14 @@
    $CWBAPIKey = '';
    ```
 ## 成品演示
-[lin.ee/t69s2tm](lin.ee/t69s2tm)
+[https://lin.ee/t69s2tm](https://lin.ee/t69s2tm)
+## License
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+## Contact
+劉顥權 Haoquan Liu - [contact@haoquan.me](mailto:contact@haoquan.me)
+
+Project Link: [https://github.com/hqn21/weather-crawler/](https://github.com/hqn21/weather-crawler/)
+
 ## License
 根據 MIT License 發布，查看 [LICENSE](https://github.com/hqn21/weather-crawler/blob/main/LICENSE) 以獲得更多資訊。
 ## 聯絡我
