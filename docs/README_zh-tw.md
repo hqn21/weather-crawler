@@ -27,6 +27,8 @@
    ```php
    $CWBAPIKey = '';
    ```
+## 成品演示
+[lin.ee/t69s2tm](lin.ee/t69s2tm)
 ## License
 根據 MIT License 發布，查看 [LICENSE](https://github.com/hqn21/weather-crawler/blob/main/LICENSE) 以獲得更多資訊。
 ## 聯絡我
